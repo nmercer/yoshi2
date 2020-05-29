@@ -1,0 +1,11 @@
+syntax = "proto3";
+package telemetry;
+
+message Location {
+  string name = 1;
+  int32 id = 2;
+}
+
+service Locations {
+  rpc CreateLocation(Location) returns (Location) {}
+}

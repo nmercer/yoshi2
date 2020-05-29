@@ -1,0 +1,13 @@
+syntax = "proto3";
+package telemetry;
+
+import "google/protobuf/empty.proto";
+
+message Temp {
+  float temp = 1;
+  int32 location_id = 2;
+}
+
+service Temps {
+  rpc CreateTemp(Temp) returns (google.protobuf.Empty) {}
+}
