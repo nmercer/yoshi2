@@ -1,2 +1,7 @@
 # TODO
 vendor
+
+# TLS
+*.key
+*.csr
+*.crt
