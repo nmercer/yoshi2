@@ -1,21 +1,24 @@
 package handler
 
 import (
-	"log"
-
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/nmercer/yoshi2/services/server/controller"
 	"github.com/nmercer/yoshi2/services/server/telemetry"
 	"golang.org/x/net/context"
 )
 
 // TempServer represents the gRPC server
-type TempServer struct {
+type tempServer struct {
+	controller controller.TempController
 }
 
-func (s *TempServer) CreateTemp(ctx context.Context, in *telemetry.Temp) (*empty.Empty, error) {
-	// TODO: Make a controller request here
-	log.Printf("Temp: %f", in.Temp)
-	log.Printf("Location: %d", in.LocationId)
+func NewTempServer(controller controller.TempController) telemetry.TempsServer {
+	return &tempServer{
+		controller: controller,
+	}
+}
 
-	return new(empty.Empty), nil
+func (s *tempServer) CreateTemp(ctx context.Context, data *telemetry.Temp) (*empty.Empty, error) {
+	// TODO: Pass GRPC or raw data here like name?
+	return s.controller.CreateTemp(data.Temp, data.LocationId)
 }

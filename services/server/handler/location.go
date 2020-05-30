@@ -2,20 +2,23 @@
 package handler
 
 import (
-	"log"
-
+	"github.com/nmercer/yoshi2/services/server/controller"
 	"github.com/nmercer/yoshi2/services/server/telemetry"
 	"golang.org/x/net/context"
 )
 
 // TempServer represents the gRPC server
-type LocationServer struct {
+type locationServer struct {
+	controller controller.LocationController
 }
 
-func (s *LocationServer) CreateLocation(ctx context.Context, in *telemetry.Location) (*telemetry.Location, error) {
-	log.Printf("Name: %s", in.Name)
+func NewLocationServer(controller controller.LocationController) telemetry.LocationsServer {
+	return &locationServer{
+		controller: controller,
+	}
+}
 
-	// TODO: Make a controller request here
-	location := telemetry.Location{Name: in.Name, Id: 1}
-	return &location, nil
+func (s *locationServer) CreateLocation(ctx context.Context, data *telemetry.Location) (*telemetry.Location, error) {
+	// TODO: Pass GRPC or raw data here like name?
+	return s.controller.CreateLocation(data.Name)
 }

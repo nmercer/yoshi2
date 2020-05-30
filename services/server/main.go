@@ -5,7 +5,9 @@ import (
 	"log"
 	"net"
 
+	"github.com/nmercer/yoshi2/services/server/controller"
 	"github.com/nmercer/yoshi2/services/server/handler"
+	"github.com/nmercer/yoshi2/services/server/store"
 	"github.com/nmercer/yoshi2/services/server/telemetry"
 	"google.golang.org/grpc"
 )
@@ -18,16 +20,21 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	// create a server instance
-	tempServer := handler.TempServer{}
-	locationServer := handler.LocationServer{}
+	// create server instances
+	tempStore := store.NewTempStore()
+	tempController := controller.NewTempController(tempStore)
+	tempServer := handler.NewTempServer(tempController)
+
+	locationStore := store.NewLocationStore()
+	locationController := controller.NewLocationController(locationStore)
+	locationServer := handler.NewLocationServer(locationController)
 
 	// create a gRPC server object
 	grpcServer := grpc.NewServer()
 
 	// attach the Ping service to the server
-	telemetry.RegisterTempsServer(grpcServer, &tempServer)
-	telemetry.RegisterLocationsServer(grpcServer, &locationServer)
+	telemetry.RegisterTempsServer(grpcServer, tempServer)
+	telemetry.RegisterLocationsServer(grpcServer, locationServer)
 
 	// start the server
 	if err := grpcServer.Serve(lis); err != nil {

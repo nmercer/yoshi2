@@ -17,7 +17,7 @@ func main() {
 	defer conn.Close()
 
 	tempClient := telemetry.NewTempsClient(conn)
-	_, err = tempClient.CreateTemp(context.Background(), &telemetry.Temp{Temp: 420.69, LocationId: 1})
+	_, err = tempClient.CreateTemp(context.Background(), &telemetry.Temp{Temp: 420.69, LocationId: 3})
 	if err != nil {
 		log.Fatalf("Error when calling GetTemp: %s", err)
 	}
@@ -29,6 +29,7 @@ func main() {
 	}
 
 	log.Printf("Location ID: %d", locResponse.Id)
+	log.Printf("Location Name: %s", locResponse.Name)
 	// response, err := c.SayHello(context.Background(), &telemetry.PingMessage{Greeting: "foo"})
 
 }
