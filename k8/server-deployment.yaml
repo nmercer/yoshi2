@@ -1,0 +1,38 @@
+# TODO: Possibly reorg these from client/server
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-app
+  labels:
+    k8s-app: server-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: server-app
+  template:
+    metadata:
+      labels:
+        k8s-app: server-app
+    spec:
+      volumes:
+      - name: tls
+        secret:
+          secretName: tls
+      containers:
+      - name: server-app
+        image: nmercer88/yoshi2:alpha
+        ports:
+        - containerPort: 50051
+          name: grpc
+        volumeMounts:
+          - name: tls
+            mountPath: /var/secrets/tls
+        env:
+          # TODO: Why do these not work?
+          - name: TLS_KEY
+            value: /var/secrets/tls/server.crt
+          - name: TLS_CERT
+            value: /var/secrets/tls/server.key

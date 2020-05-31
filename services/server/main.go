@@ -19,18 +19,30 @@ import (
 var (
 	tlsCert = flag.String(
 		"tls_cert",
-		"../../server.crt",
+		"/var/secrets/tls/server.crt",
 		"path to tls cert file")
 	tlsKey = flag.String(
 		"tls_key",
-		"../../server.key",
+		"/var/secrets/tls/server.key",
 		"path to tls key file")
+	grpcPort = flag.Int(
+		"grpc_port",
+		50051,
+		"port for gRPC")
+	httpPort = flag.Int(
+		"http_port",
+		8080,
+		"port for http server")
 )
 
 // main start a gRPC server and waits for connection
 func main() {
-	// create a listener on TCP port 7777
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 7777))
+	log.Printf("~~ Starting Server")
+
+	flag.Parse()
+
+	// setup net listener
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *grpcPort))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
