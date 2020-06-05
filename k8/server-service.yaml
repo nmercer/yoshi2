@@ -1,12 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: server-service
-  namespace: default
+  name: grpc-lb
 spec:
-  selector:
-    k8s-app: server-app
+  externalTrafficPolicy: Cluster
   ports:
-  - port: 50051
+  - name: grpc-server
+    port: 50051
+    protocol: TCP
     targetPort: 50051
-    name: grpc
+  selector:
+    component: grpc
+  sessionAffinity: None
+  type: LoadBalancer

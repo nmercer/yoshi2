@@ -8,7 +8,6 @@ import (
 	"github.com/nmercer/yoshi2/services/client/telemetry"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 )
 
 var (
@@ -16,26 +15,40 @@ var (
 		"tls_cert",
 		"../../server.crt",
 		"path to tls cert file")
+	tlsEnabled = flag.Bool(
+		"tls_enabled",
+		false,
+		"enable or disable TLS")
+	grpcServer = flag.String(
+		"grpc_server",
+		"192.168.64.3",
+		"ip address of grpc server")
 	grpcPort = flag.Int(
 		"grpc_port",
-		50051,
+		31726,
 		"port for gRPC")
-	// TODO: Figure out how to handle client locations.
-	// locationName = flag.String(
-	// 	"location_name",
-	// 	"default",
-	// 	"name of location")
 )
 
 func main() {
 	var conn *grpc.ClientConn
 
-	// Create the client TLS credentials
-	creds, err := credentials.NewClientTLSFromFile(*tlsCert, "")
-	if err != nil {
-		log.Fatalf("could not load tls cert: %s", err)
-	}
-	conn, err = grpc.Dial(fmt.Sprintf("192.168.64.2:%d", *grpcPort), grpc.WithTransportCredentials(creds))
+	// TODO: Get TLS working in kubernetes
+	// 	// Create the client TLS credentials
+	// 	creds, err := credentials.NewClientTLSFromFile(*tlsCert, "")
+	// 	if err != nil {
+	// 		log.Fatalf("could not load tls cert: %s", err)
+	// 	}
+	// 	conn, err = grpc.Dial(
+	// 		fmt.Sprintf("%s:%d", *grpcServer, *grpcPort),
+	// 		grpc.WithTransportCredentials(creds))
+	// 	if err != nil {
+	// 		log.Fatalf("did not connect: %s", err)
+	// 	}
+	// 	defer conn.Close()
+
+	conn, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", *grpcServer, *grpcPort),
+		grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
 	}

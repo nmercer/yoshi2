@@ -3,30 +3,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server-app
+  name: grpc-server-deployment
   labels:
-    k8s-app: server-app
-  namespace: default
+    app: grpc-server
+    component: "grpc"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: server-app
+      app: grpc-server
   template:
     metadata:
       labels:
-        k8s-app: server-app
+        app: grpc-server
+        component: "grpc"
     spec:
       volumes:
       - name: tls
         secret:
           secretName: tls
       containers:
-      - name: server-app
+      - name: grpc-server
+        imagePullPolicy: Always
         image: nmercer88/yoshi2:alpha
         ports:
         - containerPort: 50051
-          name: grpc
+          name: grpc-port
+          protocol: TCP
         volumeMounts:
           - name: tls
             mountPath: /var/secrets/tls
