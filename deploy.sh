@@ -1,5 +1,3 @@
-
-
 kubectl apply -f k8/
 
 docker build -t nmercer88/yoshi2:alpha -f services/server/Dockerfile services/server/

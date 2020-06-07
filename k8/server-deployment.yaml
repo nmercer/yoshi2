@@ -1,5 +1,3 @@
-# TODO: Possibly reorg these from client/server
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
