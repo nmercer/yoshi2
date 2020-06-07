@@ -37,3 +37,9 @@ spec:
             value: /var/secrets/tls/server.crt
           - name: TLS_CERT
             value: /var/secrets/tls/server.key
+      initContainers:
+      - name: migrations
+        image: nmercer88/yoshi2:migrations
+        command: ['/migrate']
+        args: ['-source', 'file:///var/migrations/postgres', '-database', 'postgres://test:test@10.105.102.104:5432/telemetry?sslmode=disable', 'up']
+

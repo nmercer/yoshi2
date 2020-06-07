@@ -4,11 +4,13 @@
 package telemetry
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	empty "github.com/golang/protobuf/ptypes/empty"
-	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -21,7 +23,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Temp struct {
 	Temp                 float32  `protobuf:"fixed32,1,opt,name=temp,proto3" json:"temp,omitempty"`
@@ -74,7 +76,9 @@ func init() {
 	proto.RegisterType((*Temp)(nil), "telemetry.Temp")
 }
 
-func init() { proto.RegisterFile("temperature.proto", fileDescriptor_b42fa9d0f0973a72) }
+func init() {
+	proto.RegisterFile("temperature.proto", fileDescriptor_b42fa9d0f0973a72)
+}
 
 var fileDescriptor_b42fa9d0f0973a72 = []byte{
 	// 171 bytes of a gzipped FileDescriptorProto
@@ -93,11 +97,11 @@ var fileDescriptor_b42fa9d0f0973a72 = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // TempsClient is the client API for Temps service.
 //
@@ -107,10 +111,10 @@ type TempsClient interface {
 }
 
 type tempsClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewTempsClient(cc *grpc.ClientConn) TempsClient {
+func NewTempsClient(cc grpc.ClientConnInterface) TempsClient {
 	return &tempsClient{cc}
 }
 
@@ -126,6 +130,14 @@ func (c *tempsClient) CreateTemp(ctx context.Context, in *Temp, opts ...grpc.Cal
 // TempsServer is the server API for Temps service.
 type TempsServer interface {
 	CreateTemp(context.Context, *Temp) (*empty.Empty, error)
+}
+
+// UnimplementedTempsServer can be embedded to have forward compatible implementations.
+type UnimplementedTempsServer struct {
+}
+
+func (*UnimplementedTempsServer) CreateTemp(ctx context.Context, req *Temp) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTemp not implemented")
 }
 
 func RegisterTempsServer(s *grpc.Server, srv TempsServer) {

@@ -4,10 +4,12 @@
 package telemetry
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -20,7 +22,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Location struct {
 	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -73,7 +75,9 @@ func init() {
 	proto.RegisterType((*Location)(nil), "telemetry.Location")
 }
 
-func init() { proto.RegisterFile("location.proto", fileDescriptor_4f0f35158dcf9f2c) }
+func init() {
+	proto.RegisterFile("location.proto", fileDescriptor_4f0f35158dcf9f2c)
+}
 
 var fileDescriptor_4f0f35158dcf9f2c = []byte{
 	// 127 bytes of a gzipped FileDescriptorProto
@@ -89,11 +93,11 @@ var fileDescriptor_4f0f35158dcf9f2c = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // LocationsClient is the client API for Locations service.
 //
@@ -103,10 +107,10 @@ type LocationsClient interface {
 }
 
 type locationsClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewLocationsClient(cc *grpc.ClientConn) LocationsClient {
+func NewLocationsClient(cc grpc.ClientConnInterface) LocationsClient {
 	return &locationsClient{cc}
 }
 
@@ -122,6 +126,14 @@ func (c *locationsClient) CreateLocation(ctx context.Context, in *Location, opts
 // LocationsServer is the server API for Locations service.
 type LocationsServer interface {
 	CreateLocation(context.Context, *Location) (*Location, error)
+}
+
+// UnimplementedLocationsServer can be embedded to have forward compatible implementations.
+type UnimplementedLocationsServer struct {
+}
+
+func (*UnimplementedLocationsServer) CreateLocation(ctx context.Context, req *Location) (*Location, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateLocation not implemented")
 }
 
 func RegisterLocationsServer(s *grpc.Server, srv LocationsServer) {

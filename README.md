@@ -26,3 +26,10 @@ minikube service grpc-lb --url
 
 # Deploy
 ./deploy.sh
+
+# PSQL
+brew install golang-migrate
+
+kubectl exec -it <pod> -- sh
+psql -h localhost -U test --password -p 5432
+create database telemetry;
