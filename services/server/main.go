@@ -2,10 +2,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
 
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/namsral/flag"
 	"github.com/nmercer/yoshi2/services/server/controller"
 	"github.com/nmercer/yoshi2/services/server/handler"
@@ -31,12 +33,23 @@ var (
 		"grpc_port",
 		50051,
 		"port for gRPC")
+	postgresURL = flag.String(
+		"postgres_url",
+		"postgres://test:test@10.105.102.104:5432/telemetry?sslmode=disable",
+		"url to postgres server")
 )
 
 func main() {
 	log.Printf("~~ Starting Server on port %d", *grpcPort)
 
 	flag.Parse()
+
+	// connect to postgres
+	postgresConn, err := pgxpool.Connect(context.Background(), *postgresURL)
+	if err != nil {
+		log.Fatalf("unable to connect to database: %v", err)
+	}
+	defer postgresConn.Close()
 
 	// setup net listener
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *grpcPort))
@@ -45,11 +58,11 @@ func main() {
 	}
 
 	// create server instances
-	tempStore := store.NewTempStore()
+	tempStore := store.NewTempStore(postgresConn)
 	tempController := controller.NewTempController(tempStore)
 	tempServer := handler.NewTempServer(tempController)
 
-	locationStore := store.NewLocationStore()
+	locationStore := store.NewLocationStore(postgresConn)
 	locationController := controller.NewLocationController(locationStore)
 	locationServer := handler.NewLocationServer(locationController)
 

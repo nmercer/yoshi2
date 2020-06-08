@@ -1,10 +1,11 @@
 package store
 
 import (
-	"log"
+	"context"
+	"fmt"
 
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/nmercer/yoshi2/services/server/telemetry"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type TempStore interface {
@@ -12,17 +13,22 @@ type TempStore interface {
 }
 
 type tempStore struct {
+	postgresConn *pgxpool.Pool
 }
 
-func NewTempStore() *tempStore {
-	return &tempStore{}
+func NewTempStore(postgresConn *pgxpool.Pool) *tempStore {
+	return &tempStore{
+		postgresConn: postgresConn,
+	}
 }
 
 func (s tempStore) CreateTemp(temp float32, locationId int32) (*empty.Empty, error) {
-	log.Printf("Temp: %f", temp)
-	log.Printf("Location: %d", locationId)
+	createSQL := fmt.Sprintf("INSERT INTO temperatures (temperature, location_id) VALUES ('%f', '%d');", temp, locationId)
 
-	// TODO: Make this a DB call instead
-	_ = telemetry.Temp{Temp: temp, LocationId: locationId}
+	_, err := s.postgresConn.Query(context.Background(), createSQL)
+	if err != nil {
+		return nil, err
+	}
+
 	return new(empty.Empty), nil
 }

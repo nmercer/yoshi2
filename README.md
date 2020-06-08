@@ -33,3 +33,9 @@ brew install golang-migrate
 kubectl exec -it <pod> -- sh
 psql -h localhost -U test --password -p 5432
 create database telemetry;
+
+# Migrations
+// TODO: Description of the way migrations are run
+
+// Migration create example
+migrate create -ext sql -dir services/server/migrations/ -seq create_locations_table
