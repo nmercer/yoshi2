@@ -8,14 +8,25 @@ Data is passed from client <-> server via GRPC. Shared proto files are compiled 
 Docker images are publicly hosted on docker hub.
 
 #### Kubernetes 
-There are a handful of kubernetes features at play in the server. **Minikube** is leveraged here because I had no experience with it and thought it would be interesting to use locally (Most of my experience is with Google Kubernetes Engine). A **LoadBalancer** is used to expose the GRPC server to the world. TLS secrets are mounted via **volumes** and **secrets**. An **initContainers** is used to deploy migrations via a custom github.com/golang-migrate/migrate docker image. A **PersistentVolumeClaim** and **PersistentVolume** are used to host the postgres data. The postgres server is running within the cluster for low latency queries.
+There are a handful of kubernetes features at play in the server. **Minikube** is leveraged here because I had no experience with it and thought it would be interesting to use locally (Most of my experience is with Google Kubernetes Engine). A **LoadBalancer** is used to expose the GRPC server to the world. TLS secrets are mounted via **volumes** and **secrets**. An **initContainers** is used to deploy migrations via a custom [github.com/golang-migrate/migrate](github.com/golang-migrate/migrate) docker image. A **PersistentVolumeClaim** and **PersistentVolume** are used to host the postgres data. The postgres server is running within the cluster for low latency queries.
 
 #### Postgres
-Normally to store telemetry data I would not have gone with a relational database. I would have chosen something like Google Cloud Datastore, Google BigQuery or Cassandra. However having worked professionally in NoSQL databases the past few years I wanted to get my hands dirty in SQL again.
+Normally to store massive amounts of telemetry data I would not have gone with a relational database. I would have chosen something like Google Cloud Datastore, Google BigQuery or Cassandra. However having worked professionally in NoSQL databases the past few years I wanted to get my hands dirty in SQL again.
 
 #### Golang
 Its rad.
 
+# TODO: 
+- Document Code
+- Unit Testing
+- Integration Testing
+- CI/CD
+- Prometheus
+- Go Channels
+- Working TLS in Kubernetes
+- GRPC Rest Endpoints
+- Swagger
+- Kubernetes Health Checks
 
 # Secrets
 ```

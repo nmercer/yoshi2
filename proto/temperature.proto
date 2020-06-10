@@ -8,6 +8,15 @@ message Temp {
   int32 location_id = 2;
 }
 
+message GetTempsRequest {
+  int32 location_id = 1;
+}
+
+message GetTempsResponse {
+  repeated float temps = 1;
+}
+
 service Temps {
   rpc CreateTemp(Temp) returns (google.protobuf.Empty) {}
+  rpc GetTemps(GetTempsRequest) returns (GetTempsResponse) {}
 }

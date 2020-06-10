@@ -7,6 +7,7 @@ import (
 
 type TempController interface {
 	CreateTemp(temp float32, locationId int32) (*empty.Empty, error)
+	GetTemp(locationId int32) ([]float32, error)
 }
 
 type tempController struct {
@@ -21,4 +22,8 @@ func NewTempController(tempStore store.TempStore) TempController {
 
 func (c tempController) CreateTemp(temp float32, locationId int32) (*empty.Empty, error) {
 	return c.tempStore.CreateTemp(temp, locationId)
+}
+
+func (c tempController) GetTemp(locationId int32) ([]float32, error) {
+	return c.tempStore.GetTemp(locationId)
 }

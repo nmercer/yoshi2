@@ -55,18 +55,27 @@ func main() {
 	defer conn.Close()
 
 	locationClient := telemetry.NewLocationsClient(conn)
-	locResponse, err := locationClient.CreateLocation(context.Background(), &telemetry.Location{Name: "test5"})
+	locResponse, err := locationClient.CreateLocation(context.Background(), &telemetry.Location{Name: "test1"})
 	if err != nil {
 		log.Fatalf("Error when calling CreateLocation: %s", err)
 	}
 
 	tempClient := telemetry.NewTempsClient(conn)
-	_, err = tempClient.CreateTemp(context.Background(), &telemetry.Temp{Temp: 420.69, LocationId: 1})
+	_, err = tempClient.CreateTemp(context.Background(), &telemetry.Temp{Temp: 420.69, LocationId: locResponse.Id})
+	if err != nil {
+		log.Fatalf("Error when calling CreateTemp: %s", err)
+	}
+	_, err = tempClient.CreateTemp(context.Background(), &telemetry.Temp{Temp: 69.420, LocationId: locResponse.Id})
 	if err != nil {
 		log.Fatalf("Error when calling CreateTemp: %s", err)
 	}
 
+	tempResponse, err := tempClient.GetTemps(context.Background(), &telemetry.GetTempsRequest{LocationId: locResponse.Id})
+	if err != nil {
+		log.Fatalf("Error when calling GetTemps: %s", err)
+	}
+
+	log.Print(tempResponse.Temps)
 	log.Printf("Location ID: %d", locResponse.Id)
 	log.Printf("Location Name: %s", locResponse.Name)
-
 }

@@ -72,8 +72,88 @@ func (m *Temp) GetLocationId() int32 {
 	return 0
 }
 
+type GetTempsRequest struct {
+	LocationId           int32    `protobuf:"varint,1,opt,name=location_id,json=locationId,proto3" json:"location_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTempsRequest) Reset()         { *m = GetTempsRequest{} }
+func (m *GetTempsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetTempsRequest) ProtoMessage()    {}
+func (*GetTempsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b42fa9d0f0973a72, []int{1}
+}
+
+func (m *GetTempsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTempsRequest.Unmarshal(m, b)
+}
+func (m *GetTempsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTempsRequest.Marshal(b, m, deterministic)
+}
+func (m *GetTempsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTempsRequest.Merge(m, src)
+}
+func (m *GetTempsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetTempsRequest.Size(m)
+}
+func (m *GetTempsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTempsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTempsRequest proto.InternalMessageInfo
+
+func (m *GetTempsRequest) GetLocationId() int32 {
+	if m != nil {
+		return m.LocationId
+	}
+	return 0
+}
+
+type GetTempsResponse struct {
+	Temps                []float32 `protobuf:"fixed32,1,rep,packed,name=temps,proto3" json:"temps,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *GetTempsResponse) Reset()         { *m = GetTempsResponse{} }
+func (m *GetTempsResponse) String() string { return proto.CompactTextString(m) }
+func (*GetTempsResponse) ProtoMessage()    {}
+func (*GetTempsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b42fa9d0f0973a72, []int{2}
+}
+
+func (m *GetTempsResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTempsResponse.Unmarshal(m, b)
+}
+func (m *GetTempsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTempsResponse.Marshal(b, m, deterministic)
+}
+func (m *GetTempsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTempsResponse.Merge(m, src)
+}
+func (m *GetTempsResponse) XXX_Size() int {
+	return xxx_messageInfo_GetTempsResponse.Size(m)
+}
+func (m *GetTempsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTempsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTempsResponse proto.InternalMessageInfo
+
+func (m *GetTempsResponse) GetTemps() []float32 {
+	if m != nil {
+		return m.Temps
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*Temp)(nil), "telemetry.Temp")
+	proto.RegisterType((*GetTempsRequest)(nil), "telemetry.GetTempsRequest")
+	proto.RegisterType((*GetTempsResponse)(nil), "telemetry.GetTempsResponse")
 }
 
 func init() {
@@ -81,18 +161,22 @@ func init() {
 }
 
 var fileDescriptor_b42fa9d0f0973a72 = []byte{
-	// 171 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2c, 0x49, 0xcd, 0x2d,
-	0x48, 0x2d, 0x4a, 0x2c, 0x29, 0x2d, 0x4a, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x2c,
-	0x49, 0xcd, 0x49, 0xcd, 0x4d, 0x2d, 0x29, 0xaa, 0x94, 0x92, 0x4e, 0xcf, 0xcf, 0x4f, 0xcf, 0x49,
-	0xd5, 0x07, 0x4b, 0x24, 0x95, 0xa6, 0xe9, 0xa7, 0xe6, 0x16, 0x94, 0x54, 0x42, 0xd4, 0x29, 0x59,
-	0x73, 0xb1, 0x84, 0xa4, 0xe6, 0x16, 0x08, 0x09, 0x71, 0xb1, 0x80, 0x0c, 0x91, 0x60, 0x54, 0x60,
-	0xd4, 0x60, 0x0a, 0x02, 0xb3, 0x85, 0xe4, 0xb9, 0xb8, 0x73, 0xf2, 0x93, 0x13, 0x4b, 0x32, 0xf3,
-	0xf3, 0xe2, 0x33, 0x53, 0x24, 0x98, 0x14, 0x18, 0x35, 0x58, 0x83, 0xb8, 0x60, 0x42, 0x9e, 0x29,
-	0x46, 0x0e, 0x5c, 0xac, 0x20, 0xcd, 0xc5, 0x42, 0xe6, 0x5c, 0x5c, 0xce, 0x45, 0xa9, 0x89, 0x25,
-	0xa9, 0x60, 0xb3, 0xf8, 0xf5, 0xe0, 0x96, 0xeb, 0x81, 0x04, 0xa4, 0xc4, 0xf4, 0x20, 0x4e, 0xd0,
-	0x83, 0x39, 0x41, 0xcf, 0x15, 0xe4, 0x04, 0x25, 0x86, 0x24, 0x36, 0xb0, 0x88, 0x31, 0x20, 0x00,
-	0x00, 0xff, 0xff, 0x40, 0xcc, 0xc5, 0xd2, 0xc2, 0x00, 0x00, 0x00,
+	// 237 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x8f, 0xb1, 0x4e, 0xc3, 0x30,
+	0x10, 0x86, 0xeb, 0xd0, 0x20, 0x38, 0x86, 0xc2, 0x09, 0xa1, 0x28, 0x1d, 0x88, 0x32, 0x79, 0x72,
+	0xa5, 0x32, 0x30, 0x30, 0xa2, 0x0a, 0xb1, 0x5a, 0xec, 0x28, 0xa5, 0x47, 0x55, 0x29, 0xae, 0x8d,
+	0x7d, 0x19, 0xfa, 0x04, 0xbc, 0x36, 0xb2, 0xad, 0x00, 0x2a, 0x6c, 0xf6, 0xdd, 0x7d, 0x77, 0xff,
+	0x07, 0x57, 0x4c, 0xc6, 0x91, 0xef, 0x78, 0xf0, 0xa4, 0x9c, 0xb7, 0x6c, 0xf1, 0x9c, 0xa9, 0x27,
+	0x43, 0xec, 0x0f, 0xf5, 0x7c, 0x6b, 0xed, 0xb6, 0xa7, 0x45, 0x6a, 0xac, 0x87, 0xf7, 0x05, 0x19,
+	0xc7, 0x87, 0x3c, 0xd7, 0x3e, 0xc0, 0xf4, 0x85, 0x8c, 0x43, 0x84, 0x69, 0x5c, 0x52, 0x89, 0x46,
+	0xc8, 0x42, 0xa7, 0x37, 0xde, 0xc2, 0x45, 0x6f, 0xdf, 0x3a, 0xde, 0xd9, 0xfd, 0xeb, 0x6e, 0x53,
+	0x15, 0x8d, 0x90, 0xa5, 0x86, 0xb1, 0xf4, 0xbc, 0x69, 0x97, 0x30, 0x7b, 0x22, 0x8e, 0x7c, 0xd0,
+	0xf4, 0x31, 0x50, 0xe0, 0x63, 0x46, 0xfc, 0x61, 0x24, 0x5c, 0xfe, 0x30, 0xc1, 0xd9, 0x7d, 0x20,
+	0xbc, 0x86, 0x32, 0x1e, 0x0c, 0x95, 0x68, 0x4e, 0x64, 0xa1, 0xf3, 0x67, 0xf9, 0x29, 0xa0, 0x4c,
+	0x73, 0x78, 0x0f, 0xf0, 0xe8, 0xa9, 0x63, 0x4a, 0x51, 0x67, 0xea, 0xdb, 0x4d, 0xc5, 0x42, 0x7d,
+	0xa3, 0xb2, 0xa1, 0x1a, 0x0d, 0xd5, 0x2a, 0x1a, 0xb6, 0x13, 0x5c, 0xc1, 0xd9, 0x78, 0x0c, 0xeb,
+	0x5f, 0xd8, 0x51, 0xea, 0x7a, 0xfe, 0x6f, 0x2f, 0xa7, 0x6b, 0x27, 0xeb, 0xd3, 0xb4, 0xf8, 0xee,
+	0x2b, 0x00, 0x00, 0xff, 0xff, 0x4c, 0x74, 0x4d, 0x53, 0x68, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -108,6 +192,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type TempsClient interface {
 	CreateTemp(ctx context.Context, in *Temp, opts ...grpc.CallOption) (*empty.Empty, error)
+	GetTemps(ctx context.Context, in *GetTempsRequest, opts ...grpc.CallOption) (*GetTempsResponse, error)
 }
 
 type tempsClient struct {
@@ -127,9 +212,19 @@ func (c *tempsClient) CreateTemp(ctx context.Context, in *Temp, opts ...grpc.Cal
 	return out, nil
 }
 
+func (c *tempsClient) GetTemps(ctx context.Context, in *GetTempsRequest, opts ...grpc.CallOption) (*GetTempsResponse, error) {
+	out := new(GetTempsResponse)
+	err := c.cc.Invoke(ctx, "/telemetry.Temps/GetTemps", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TempsServer is the server API for Temps service.
 type TempsServer interface {
 	CreateTemp(context.Context, *Temp) (*empty.Empty, error)
+	GetTemps(context.Context, *GetTempsRequest) (*GetTempsResponse, error)
 }
 
 // UnimplementedTempsServer can be embedded to have forward compatible implementations.
@@ -138,6 +233,9 @@ type UnimplementedTempsServer struct {
 
 func (*UnimplementedTempsServer) CreateTemp(ctx context.Context, req *Temp) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTemp not implemented")
+}
+func (*UnimplementedTempsServer) GetTemps(ctx context.Context, req *GetTempsRequest) (*GetTempsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTemps not implemented")
 }
 
 func RegisterTempsServer(s *grpc.Server, srv TempsServer) {
@@ -162,6 +260,24 @@ func _Temps_CreateTemp_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Temps_GetTemps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTempsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TempsServer).GetTemps(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/telemetry.Temps/GetTemps",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TempsServer).GetTemps(ctx, req.(*GetTempsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Temps_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "telemetry.Temps",
 	HandlerType: (*TempsServer)(nil),
@@ -169,6 +285,10 @@ var _Temps_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateTemp",
 			Handler:    _Temps_CreateTemp_Handler,
+		},
+		{
+			MethodName: "GetTemps",
+			Handler:    _Temps_GetTemps_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

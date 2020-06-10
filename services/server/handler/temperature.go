@@ -19,6 +19,16 @@ func NewTempServer(controller controller.TempController) telemetry.TempsServer {
 }
 
 func (s *tempServer) CreateTemp(ctx context.Context, data *telemetry.Temp) (*empty.Empty, error) {
-	// TODO: Pass GRPC or raw data here like name?
 	return s.controller.CreateTemp(data.Temp, data.LocationId)
+}
+
+func (s *tempServer) GetTemps(ctx context.Context, req *telemetry.GetTempsRequest) (*telemetry.GetTempsResponse, error) {
+	listTemps, err := s.controller.GetTemp(req.LocationId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &telemetry.GetTempsResponse{
+		Temps: listTemps,
+	}, nil
 }
