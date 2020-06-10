@@ -10,6 +10,7 @@ import (
 
 type LocationStore interface {
 	CreateLocation(name string) (*telemetry.Location, error)
+	GetLocations() ([]*telemetry.Location, error)
 }
 
 type locationStore struct {
@@ -23,7 +24,7 @@ func NewLocationStore(postgresConn *pgxpool.Pool) *locationStore {
 }
 
 func (s locationStore) CreateLocation(name string) (*telemetry.Location, error) {
-	// TODO: Some generic protection aginst SQL injection here?
+	// TODO: Some generic protection against SQL injection here?
 	createSQL := fmt.Sprintf("INSERT INTO locations (name) VALUES ('%s') RETURNING location_id;", name)
 
 	var locationID int32
@@ -36,4 +37,30 @@ func (s locationStore) CreateLocation(name string) (*telemetry.Location, error) 
 
 	location := telemetry.Location{Name: name, Id: locationID}
 	return &location, nil
+}
+
+func (s locationStore) GetLocations() ([]*telemetry.Location, error) {
+	getSQL := fmt.Sprint("SELECT (location_id, name) FROM locations")
+
+	rows, err := s.postgresConn.Query(context.Background(), getSQL)
+	if err != nil {
+		return nil, err
+	}
+
+	var locations []*telemetry.Location
+
+	for rows.Next() {
+		var locationID int32
+		var name string
+
+		err := rows.Scan(&locationID, &name)
+		if err != nil {
+			return nil, err
+		}
+
+		location := telemetry.Location{Name: name, Id: locationID}
+		locations = append(locations, &location)
+	}
+
+	return locations, nil
 }

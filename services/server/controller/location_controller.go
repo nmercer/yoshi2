@@ -7,6 +7,7 @@ import (
 
 type LocationController interface {
 	CreateLocation(name string) (*telemetry.Location, error)
+	GetLocations() ([]*telemetry.Location, error)
 }
 
 type locationController struct {
@@ -21,4 +22,8 @@ func NewLocationController(locationStore store.LocationStore) LocationController
 
 func (c locationController) CreateLocation(name string) (*telemetry.Location, error) {
 	return c.locationStore.CreateLocation(name)
+}
+
+func (c locationController) GetLocations() ([]*telemetry.Location, error) {
+	return c.locationStore.GetLocations()
 }
