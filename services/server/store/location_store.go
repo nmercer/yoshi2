@@ -40,7 +40,7 @@ func (s locationStore) CreateLocation(name string) (*telemetry.Location, error) 
 }
 
 func (s locationStore) GetLocations() ([]*telemetry.Location, error) {
-	getSQL := fmt.Sprint("SELECT (location_id, name) FROM locations")
+	getSQL := fmt.Sprint("SELECT * FROM locations")
 
 	rows, err := s.postgresConn.Query(context.Background(), getSQL)
 	if err != nil {

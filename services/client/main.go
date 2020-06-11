@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/google/uuid"
 	"github.com/namsral/flag"
 	"github.com/nmercer/yoshi2/services/client/telemetry"
 	"golang.org/x/net/context"
@@ -56,7 +57,7 @@ func main() {
 	defer conn.Close()
 
 	locationClient := telemetry.NewLocationsClient(conn)
-	locResponse, err := locationClient.CreateLocation(context.Background(), &telemetry.Location{Name: "test8"})
+	locResponse, err := locationClient.CreateLocation(context.Background(), &telemetry.Location{Name: uuid.New().String()})
 	if err != nil {
 		log.Fatalf("Error when calling CreateLocation: %s", err)
 	}
@@ -76,15 +77,14 @@ func main() {
 		log.Fatalf("Error when calling GetTemps: %s", err)
 	}
 
-	// TODO: Not working :(
+	log.Printf("Location ID: %d", locResponse.Id)
+	log.Printf("Location Name: %s", locResponse.Name)
+	log.Print(tempResponse.Temps)
+
 	locationsResponse, err := locationClient.GetLocations(context.Background(), &empty.Empty{})
 	if err != nil {
 		log.Fatalf("Error when calling GetLocations: %s", err)
 	}
-
-	log.Printf("Location ID: %d", locResponse.Id)
-	log.Printf("Location Name: %s", locResponse.Name)
-	log.Print(tempResponse.Temps)
 	log.Print(locationsResponse.Locations)
 
 }
