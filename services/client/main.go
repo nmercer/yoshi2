@@ -86,5 +86,4 @@ func main() {
 		log.Fatalf("Error when calling GetLocations: %s", err)
 	}
 	log.Print(locationsResponse.Locations)
-
 }

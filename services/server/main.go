@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/namsral/flag"
@@ -37,11 +38,13 @@ var (
 		"postgres_url",
 		"postgres://test:test@10.105.102.104:5432/telemetry?sslmode=disable",
 		"url to postgres server")
+	httpPort = flag.Int(
+		"http_port",
+		8080,
+		"health check http port")
 )
 
 func main() {
-	log.Printf("~~ Starting Server on port %d", *grpcPort)
-
 	flag.Parse()
 
 	// connect to postgres
@@ -83,7 +86,18 @@ func main() {
 	telemetry.RegisterTempsServer(grpcServer, tempServer)
 	telemetry.RegisterLocationsServer(grpcServer, locationServer)
 
-	// start the server
+	// health server
+	go func() {
+		log.Printf("~~ Starting Health Server on port %d", *httpPort)
+		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+			log.Printf("Health Endpoint Hit")
+			w.WriteHeader(http.StatusOK)
+		})
+		log.Fatal(http.ListenAndServe(":8080", nil))
+	}()
+
+	// start the grpc server
+	log.Printf("~~ Starting GRPC Server on port %d", *grpcPort)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
