@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/namsral/flag"
 	"github.com/nmercer/yoshi2/services/server/controller"
@@ -42,6 +43,10 @@ var (
 		"http_port",
 		8080,
 		"health check http port")
+	grpcHTTPPort = flag.Int(
+		"grpc_http_port",
+		8081,
+		"port for grpc over http")
 )
 
 func main() {
@@ -86,17 +91,41 @@ func main() {
 	telemetry.RegisterTempsServer(grpcServer, tempServer)
 	telemetry.RegisterLocationsServer(grpcServer, locationServer)
 
+	// grpc gateway
+	mux := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithInsecure()}
+
+	err = telemetry.RegisterLocationsHandlerFromEndpoint(context.Background(), mux, fmt.Sprintf(":%d", *grpcPort), opts)
+	if err != nil {
+		log.Fatalf("RegisterYourServiceHandlerFromEndpoint failed: %s", err)
+	}
+	err = telemetry.RegisterTempsHandlerFromEndpoint(context.Background(), mux, fmt.Sprintf(":%d", *grpcPort), opts)
+	if err != nil {
+		log.Fatalf("RegisterTempsHandlerFromEndpoint failed: %s", err)
+	}
+
+	// TODO:
+	// Better way than these go func's?
+	// These go func should probably be functions that can return an error?
+	// We want to kill the server on a bad error so pods can restart.
+	// Better way than wait groups?
+
+	// grpc http server
+	go func() {
+		log.Printf("~~ Starting HTTP GRPC Server on port %d", *grpcHTTPPort)
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *grpcHTTPPort), mux))
+	}()
+
 	// health server
 	go func() {
 		log.Printf("~~ Starting Health Server on port %d", *httpPort)
 		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-			log.Printf("Health Endpoint Hit")
 			w.WriteHeader(http.StatusOK)
 		})
-		log.Fatal(http.ListenAndServe(":8080", nil))
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), nil))
 	}()
 
-	// start the grpc server
+	// grpc server
 	log.Printf("~~ Starting GRPC Server on port %d", *grpcPort)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)

@@ -30,6 +30,8 @@ spec:
           protocol: TCP
         - containerPort: 8080
           name: healthz
+        - containerPort: 8081
+          name: grpc-http-port
         readinessProbe:
           httpGet:
             path: /healthz

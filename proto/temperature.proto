@@ -2,6 +2,7 @@ syntax = "proto3";
 package telemetry;
 
 import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
 
 message Temp {
   float temp = 1;
@@ -17,6 +18,16 @@ message GetTempsResponse {
 }
 
 service Temps {
-  rpc CreateTemp(Temp) returns (google.protobuf.Empty) {}
-  rpc GetTemps(GetTempsRequest) returns (GetTempsResponse) {}
+  rpc GetTemps(GetTempsRequest) returns (GetTempsResponse) {
+    option (google.api.http) = {
+      get: "/locations/{location_id}/temps"
+    };
+  }
+
+  rpc CreateTemp(Temp) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/locations/{location_id}/temps/{temp}"
+      body: "*"
+    };
+  }
 }

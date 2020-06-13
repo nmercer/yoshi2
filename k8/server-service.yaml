@@ -13,3 +13,18 @@ spec:
     component: grpc
   sessionAffinity: None
   type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-http-server
+spec:
+  type: NodePort
+  selector:
+    app: grpc-server
+  ports:
+    - port: 80
+      targetPort: 8081
+      nodePort: 30007

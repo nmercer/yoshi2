@@ -2,6 +2,9 @@ syntax = "proto3";
 package telemetry;
 
 import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+// option go_package = "github.com/nmercer/yoshi2/services/server";
 
 message Location {
   string name = 1;
@@ -13,6 +16,16 @@ message GetLocationsResponse {
 }
 
 service Locations {
-  rpc CreateLocation(Location) returns (Location) {}
-  rpc GetLocations(google.protobuf.Empty) returns (GetLocationsResponse) {}
+  rpc GetLocations(google.protobuf.Empty) returns (GetLocationsResponse) {
+    option (google.api.http) = {
+      get: "/locations"
+    };
+  }
+
+  rpc CreateLocation(Location) returns (Location) {
+    option (google.api.http) = {
+      post: "/locations/{name}"
+      body: "*"
+    };
+  }
 }
