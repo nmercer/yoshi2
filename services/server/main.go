@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/namsral/flag"
@@ -15,6 +16,8 @@ import (
 	"github.com/nmercer/yoshi2/services/server/handler"
 	"github.com/nmercer/yoshi2/services/server/store"
 	"github.com/nmercer/yoshi2/services/server/telemetry"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+
 	"google.golang.org/grpc"
 )
 
@@ -85,7 +88,10 @@ func main() {
 	// // create a gRPC server object
 	// grpcServer := grpc.NewServer(opts...)
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
+		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
+	)
 
 	// attach the Ping service to the server
 	telemetry.RegisterTempsServer(grpcServer, tempServer)
@@ -104,6 +110,10 @@ func main() {
 		log.Fatalf("RegisterTempsHandlerFromEndpoint failed: %s", err)
 	}
 
+	// grpc prometheus
+	grpc_prometheus.Register(grpcServer)
+	http.Handle("/metrics", promhttp.Handler())
+
 	// TODO:
 	// Better way than these go func's?
 	// These go func should probably be functions that can return an error?
@@ -117,13 +127,13 @@ func main() {
 	}()
 
 	// health server
-	go func() {
-		log.Printf("~~ Starting Health Server on port %d", *httpPort)
-		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusOK)
-		})
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), nil))
-	}()
+	// go func() {
+	// 	log.Printf("~~ Starting Health Server on port %d", *httpPort)
+	// 	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+	// 		w.WriteHeader(http.StatusOK)
+	// 	})
+	// 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), nil))
+	// }()
 
 	// grpc server
 	log.Printf("~~ Starting GRPC Server on port %d", *grpcPort)

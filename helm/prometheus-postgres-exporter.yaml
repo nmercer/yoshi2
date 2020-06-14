@@ -1,0 +1,13 @@
+config:
+    datasource:
+      host: 10.105.102.104
+      user: test
+      password: test
+      # passwordSecret: {}
+      # Secret name
+      #  name:
+      # Password key inside secret
+      #  key:
+      port: "5432"
+      database: 'telemetry'
+      sslmode: disable

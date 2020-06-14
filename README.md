@@ -21,11 +21,9 @@ Its rad.
 - Unit Testing
 - Integration Testing
 - CI/CD
-- Prometheus
+- Prometheus postgres_exporter (shared_preload_libraries) enable on docker  
 - Go Channels
 - Working TLS in Kubernetes
-- GRPC Rest Endpoints
-- Swagger
 
 # Secrets
 ```
@@ -61,3 +59,10 @@ migrate create -ext sql -dir services/server/migrations/ -seq create_locations_t
 # Prometheus
 namespace: monitoring
 minikube service prometheus-service --url -n monitoring
+
+# Helm
+brew install helm  
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/  
+helm repo update  
+helm install prometheus-postgres-exporter -f helm/prometheus-postgres-exporter.yaml stable/prometheus-postgres-exporter
+helm delete prometheus-postgres-exporter
