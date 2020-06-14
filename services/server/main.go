@@ -114,19 +114,13 @@ func main() {
 	grpc_prometheus.Register(grpcServer)
 	http.Handle("/metrics", promhttp.Handler())
 
-	// TODO:
-	// Better way than these go func's?
-	// These go func should probably be functions that can return an error?
-	// We want to kill the server on a bad error so pods can restart.
-	// Better way than wait groups?
-
 	// grpc server
 	go func() {
 		log.Printf("~~ Starting GRPC Server on port %d", *grpcPort)
 		log.Fatal(grpcServer.Serve(lis))
 	}()
 
-	// grpc http server
+	// http health server
 	go func() {
 		log.Printf("~~ Starting Health Server on port %d", *httpPort)
 		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
@@ -135,15 +129,7 @@ func main() {
 		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), nil))
 	}()
 
-	// health server
-	// go func() {
-	// 	log.Printf("~~ Starting Health Server on port %d", *httpPort)
-	// 	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-	// 		w.WriteHeader(http.StatusOK)
-	// 	})
-	// 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), nil))
-	// }()}
-
+	// grpc http server
 	log.Printf("~~ Starting HTTP GRPC Server on port %d", *grpcHTTPPort)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *grpcHTTPPort), mux))
 }
