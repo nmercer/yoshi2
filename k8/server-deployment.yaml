@@ -30,12 +30,12 @@ spec:
           protocol: TCP
         - containerPort: 8081
           name: grpc-http-port
-        # - containerPort: 8080
-        #   name: healthz
-        # readinessProbe:
-        #   httpGet:
-        #     path: /healthz
-        #     port: 8080
+        - containerPort: 8080
+          name: healthz
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
         volumeMounts:
           - name: tls
             mountPath: /var/secrets/tls

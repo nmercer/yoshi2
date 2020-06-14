@@ -120,10 +120,19 @@ func main() {
 	// We want to kill the server on a bad error so pods can restart.
 	// Better way than wait groups?
 
+	// grpc server
+	go func() {
+		log.Printf("~~ Starting GRPC Server on port %d", *grpcPort)
+		log.Fatal(grpcServer.Serve(lis))
+	}()
+
 	// grpc http server
 	go func() {
-		log.Printf("~~ Starting HTTP GRPC Server on port %d", *grpcHTTPPort)
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *grpcHTTPPort), mux))
+		log.Printf("~~ Starting Health Server on port %d", *httpPort)
+		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		})
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), nil))
 	}()
 
 	// health server
@@ -133,11 +142,8 @@ func main() {
 	// 		w.WriteHeader(http.StatusOK)
 	// 	})
 	// 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), nil))
-	// }()
+	// }()}
 
-	// grpc server
-	log.Printf("~~ Starting GRPC Server on port %d", *grpcPort)
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %s", err)
-	}
+	log.Printf("~~ Starting HTTP GRPC Server on port %d", *grpcHTTPPort)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *grpcHTTPPort), mux))
 }
