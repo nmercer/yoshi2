@@ -36,33 +36,40 @@ kubectl create secret generic tls --from-file=server.crt --from-file=server.key=
 ```
 
 # minikube
+```
 minikube start  
 minikube stop  
 minikube ip  
 minikube status  
 minikube service grpc-lb --url  
+```
 
 # Deploy
+```
 ./deploy.sh
+```
 
 # PSQL
+```
 brew install golang-migrate  
-
 kubectl exec -it <pod> -- sh  
 psql -h localhost -U test --password -p 5432  
 create database telemetry;  
+```
 
 # Migrations
 // Migration create example  
 migrate create -ext sql -dir services/server/migrations/ -seq create_locations_table
 
 # Prometheus
-namespace: monitoring
+namespace: monitoring  
 minikube service prometheus-service --url -n monitoring
 
 # Helm
+```
 brew install helm  
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/  
 helm repo update  
-helm install prometheus-postgres-exporter -f helm/prometheus-postgres-exporter.yaml stable/prometheus-postgres-exporter
+helm install prometheus-postgres-exporter -f helm/prometheus-postgres-exporter.yaml stable/prometheus-postgres-exporter  
 helm delete prometheus-postgres-exporter
+```
