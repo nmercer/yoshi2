@@ -58,12 +58,16 @@ create database telemetry;
 ```
 
 # Migrations
+```
 // Migration create example  
 migrate create -ext sql -dir services/server/migrations/ -seq create_locations_table
+```
 
 # Prometheus
-namespace: monitoring  
+namespace: monitoring
+```
 minikube service prometheus-service --url -n monitoring
+```
 
 # Helm
 ```
